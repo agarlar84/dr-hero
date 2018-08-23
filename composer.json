@@ -1,0 +1,13 @@
+{
+    "name": "alexgarcia/dr-hero",
+    "require-dev": {
+        "phpunit/phpunit": "^7.3"
+    },
+    "authors": [
+        {
+            "name": "alex.garcia",
+            "email": "alex.garcia@elma.care"
+        }
+    ],
+    "require": {}
+}
