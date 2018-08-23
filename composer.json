@@ -1,5 +1,15 @@
 {
     "name": "alexgarcia/dr-hero",
+    "autoload": {
+        "psr-4": {
+            "DrHero\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "require-dev": {
         "phpunit/phpunit": "^7.3"
     },
