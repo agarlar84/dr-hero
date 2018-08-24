@@ -6,6 +6,17 @@ use DrHero\Doctor\Doctor;
 
 class DoctorReviewsService
 {
+    private $doctorReviews;
+
+    /**
+     * DoctorReviewsService constructor.
+     * @param DoctorReviews $doctorReviews
+     */
+    public function __construct(DoctorReviews $doctorReviews)
+    {
+        $this->doctorReviews = $doctorReviews;
+    }
+
     /**
      *
      *
@@ -21,29 +32,50 @@ class DoctorReviewsService
      *
      *
      *
-     * @param Doctor $dr
+     * @param Doctor $doctor
      * @return ReviewsResultDTO
      */
-    public function __invoke(Doctor $dr): ReviewsResultDTO
+    public function __invoke(Doctor $doctor): ReviewsResultDTO
     {
         $resultDTO = new ReviewsResultDTO();
 
-        $publicReviews = new PublicHealthReviews;
-        $drh = new DrHeroReviews;
+        if ($this->doctorReviews->countDrHeroReviews() === 0) {
+            $resultDTO->setShowPublicHealthReviews(true);
+            $resultDTO->showHeroReviews = false;
 
-        if ($publicReviews->reviews($dr)->count() == 0) {
-            $resultDTO->showEvilReviews = false;
-        } elseif ($drh->amount > 0) {
+            return $resultDTO;
+        }
+
+        if ($this->doctorReviews->countDrHeroReviews() <= 3
+            && $this->doctorReviews->countDrHeroReviews() >= 1
+            && $this->doctorReviews->countPublicReviews() > 0) {
+            $resultDTO->setShowPublicHealthReviews(true);
             $resultDTO->showHeroReviews = true;
 
-            if ($dr->rating() < 0) {
+            return $resultDTO;
+        }
+
+        if ($this->doctorReviews->countDrHeroReviews() > 3) {
+            $resultDTO->setShowPublicHealthReviews(false);
+            $resultDTO->showHeroReviews = true;
+
+            return $resultDTO;
+        }
+
+
+        /*if ($this->doctorReviews->countPublicReviews() == 0) {
+            $resultDTO->setShowPublicHealthReviews(false);
+        } elseif ($this->doctorReviews->countDrHeroReviews() > 0) {
+            $resultDTO->showHeroReviews = true;
+
+            if ($doctor->rating() < 0) {
                 $resultDTO->rating = 'poor';
-            } elseif ($dr->rating() < 6) {
+            } elseif ($doctor->rating() < 6) {
                 $resultDTO->rating = 'regular';
             } else {
                 $resultDTO->rating = 'super awesome';
             }
-        }
+        }*/
 
         return $resultDTO;
     }
