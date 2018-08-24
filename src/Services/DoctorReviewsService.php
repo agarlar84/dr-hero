@@ -31,7 +31,7 @@ class DoctorReviewsService
         $drv = new DrEvilReviews;
         $drh = new DrHeroReviews;
 
-        if ($drv->reviews()->count() == 0) {
+        if ($drv->reviews($dr)->count() == 0) {
             $resultDTO->showEvilReviews = false;
         } elseif ($drh->amount > 0) {
             $resultDTO->showHeroReviews = true;
