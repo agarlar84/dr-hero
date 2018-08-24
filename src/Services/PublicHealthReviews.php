@@ -6,7 +6,7 @@ use DrHero\Doctor\Collection;
 use DrHero\Doctor\Doctor;
 use DrHero\Doctor\Review;
 
-class DrEvilReviews
+class PublicHealthReviews
 {
     public function reviews(Doctor $doctor): Collection
     {
