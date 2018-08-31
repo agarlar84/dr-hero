@@ -75,4 +75,35 @@ class DoctorReviewsServiceTest extends TestCase
         $this->assertFalse($dto->getShowPublicHealthReviews());
         $this->assertTrue($dto->showHeroReviews);
     }
+
+    /**
+     * If doctor rating is LESS than 6, rating tag has to be poor.
+     *
+     * @test
+     */
+    public function givenADrHeroHasReviewsWhenARatingIsLessThan6ThenRatingTagIsPoor()
+    {
+        $doctor = new Doctor();
+        $doctor->rating = 5;
+
+        $doctorReviews = $this->prophesize(DoctorReviews::class);
+
+        $doctorReviews
+            ->countDrHeroReviews()
+            ->willReturn(1);
+
+        $doctorReviews
+            ->countPublicReviews()
+            ->willReturn(0);
+
+        $sut = new DoctorReviewsService($doctorReviews->reveal());
+        $dto = $sut->__invoke($doctor);
+
+        var_dump($dto);
+        var_dump($doctor);
+
+        $this->assertEquals("poor", $dto->rating);
+        $this->assertFalse($dto->getShowPublicHealthReviews());
+        $this->assertTrue($dto->showHeroReviews);
+    }
 }

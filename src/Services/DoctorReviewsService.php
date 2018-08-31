@@ -25,6 +25,8 @@ class DoctorReviewsService
      * If DrHero has ZERO reviews, ONLY show Public Health reviews
      * If DrHero has THREE OR LESS reviews AND Public Health has reviews, SHOW both
      * If DrHero has MORE THAN THREE ONLY show DrHero reviews
+     *
+     * DrHero review grater than 0 all of this:
      * If doctor rating is LESS than 6, rating tag has to be poor.
      * If doctor rating is BETWEEN than 6 and 8, rating tag has to be regular.
      * If doctor rating is grater than 8, rating tag has to be awesome.
@@ -52,6 +54,10 @@ class DoctorReviewsService
             $resultDTO->setShowPublicHealthReviews(true);
             $resultDTO->showHeroReviews = true;
 
+            if($doctor->rating() < 6) {
+                $resultDTO->rating = 'poor';
+            }
+
             return $resultDTO;
         }
 
@@ -59,9 +65,12 @@ class DoctorReviewsService
             $resultDTO->setShowPublicHealthReviews(false);
             $resultDTO->showHeroReviews = true;
 
+            if($doctor->rating() < 6) {
+                $resultDTO->rating = 'poor';
+            }
+
             return $resultDTO;
         }
-
 
         /*if ($this->doctorReviews->countPublicReviews() == 0) {
             $resultDTO->setShowPublicHealthReviews(false);
