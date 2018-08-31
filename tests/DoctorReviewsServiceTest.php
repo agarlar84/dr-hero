@@ -94,13 +94,62 @@ class DoctorReviewsServiceTest extends TestCase
 
         $doctorReviews
             ->countPublicReviews()
-            ->willReturn(0);
+            ->willReturn(1);
 
         $sut = new DoctorReviewsService($doctorReviews->reveal());
         $dto = $sut->__invoke($doctor);
 
-        var_dump($dto);
-        var_dump($doctor);
+        $this->assertEquals("poor", $dto->rating);
+        $this->assertTrue($dto->getShowPublicHealthReviews());
+        $this->assertTrue($dto->showHeroReviews);
+    }
+
+    /**
+     * @test
+     */
+    public function givenADrHeroHasReviewsWhenARatingIsLessThan6ThenRatingTagIsPoor2()
+    {
+        $doctor = new Doctor();
+        $doctor->rating = 5;
+
+        $doctorReviews = $this->prophesize(DoctorReviews::class);
+
+        $doctorReviews
+            ->countDrHeroReviews()
+            ->willReturn(4);
+
+        $doctorReviews
+            ->countPublicReviews()
+            ->willReturn(1);
+
+        $sut = new DoctorReviewsService($doctorReviews->reveal());
+        $dto = $sut->__invoke($doctor);
+
+        $this->assertEquals("poor", $dto->rating);
+        $this->assertFalse($dto->getShowPublicHealthReviews());
+        $this->assertTrue($dto->showHeroReviews);
+    }
+
+    /**
+     * @test
+     */
+    public function givenADrHeroHasReviewsWhenARatingIsLessThan6AndThereIsNoPublicReviewsThenShowDrHeroAndRatingPoor()
+    {
+        $doctor = new Doctor();
+        $doctor->rating = 5;
+
+        $doctorReviews = $this->prophesize(DoctorReviews::class);
+
+        $doctorReviews
+            ->countDrHeroReviews()
+            ->willReturn(1);
+
+        $doctorReviews
+            ->countPublicReviews()
+            ->willReturn(0);
+
+        $sut = new DoctorReviewsService($doctorReviews->reveal());
+        $dto = $sut->__invoke($doctor);
 
         $this->assertEquals("poor", $dto->rating);
         $this->assertFalse($dto->getShowPublicHealthReviews());

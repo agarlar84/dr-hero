@@ -46,26 +46,24 @@ class DoctorReviewsService
             $resultDTO->showHeroReviews = false;
 
             return $resultDTO;
-        }
+        } elseif ($this->doctorReviews->countPublicReviews() > 0) {
+            if ($this->doctorReviews->countDrHeroReviews() <= 3
+                && $this->doctorReviews->countDrHeroReviews() >= 1) {
+                $resultDTO->setShowPublicHealthReviews(true);
+                $resultDTO->showHeroReviews = true;
 
-        if ($this->doctorReviews->countDrHeroReviews() <= 3
-            && $this->doctorReviews->countDrHeroReviews() >= 1
-            && $this->doctorReviews->countPublicReviews() > 0) {
-            $resultDTO->setShowPublicHealthReviews(true);
-            $resultDTO->showHeroReviews = true;
+                if ($doctor->rating() < 6) {
+                    $resultDTO->rating = 'poor';
+                }
 
-            if($doctor->rating() < 6) {
-                $resultDTO->rating = 'poor';
+                return $resultDTO;
             }
-
-            return $resultDTO;
         }
-
-        if ($this->doctorReviews->countDrHeroReviews() > 3) {
+        if ($this->doctorReviews->countDrHeroReviews() > 0) {
             $resultDTO->setShowPublicHealthReviews(false);
             $resultDTO->showHeroReviews = true;
 
-            if($doctor->rating() < 6) {
+            if ($doctor->rating() < 6) {
                 $resultDTO->rating = 'poor';
             }
 
