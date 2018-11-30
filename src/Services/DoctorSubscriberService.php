@@ -3,30 +3,26 @@
 namespace DrHero\Services;
 
 use DrHero\Doctor\Doctor;
-use DrHero\Services\MailService\MailChimpSubscriber;
-use DrHero\Services\MailService\TweeterSubscriber;
+
+
 
 class DoctorSubscriberService
 {
-    /** @var MailChimpSubscriber */
-    private $chimpSubscriber;
-    /** @var TweeterSubscriber */
-    private $subscriber;
+
+    private $adapterFactory;
+    private $subscriberAdapter;
+
 
     public function __construct(
-        MailChimpSubscriber $chimpSubscriber,
-        TweeterSubscriber $subscriber
-    ) {
-        $this->chimpSubscriber = $chimpSubscriber;
-        $this->subscriber = $subscriber;
+        AdapterFactory $adapterFactory
+    )
+    {
+        $this->adapterFactory = $adapterFactory;
     }
 
     public function subscribeDoctor(Doctor $doctor)
     {
-        if ($doctor->isTweeter) {
-            $this->subscriber->addSubscriptionToUser($doctor->name,$doctor->accountTweeter);
-        } else {
-            $this->chimpSubscriber->subscribeUserToMCh($doctor->name);
-        }
+        $this->subscriberAdapter = $this->adapterFactory->buildAdapter($doctor);
+        $this->subscriberAdapter->addSubscriber($doctor);
     }
 }
